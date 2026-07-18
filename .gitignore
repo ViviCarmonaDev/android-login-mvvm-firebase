@@ -1,0 +1,34 @@
+# Archivos de Android Studio / IntelliJ
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Gradle
+build/
+app/build/
+
+# Firebase (contiene claves de tu proyecto, cada dev usa el suyo)
+google-services.json
+app/google-services.json
+
+# Keystores (NUNCA subir tus firmas de release)
+*.jks
+*.keystore
+
+# Logs
+*.log
+
+# Archivos generados por Kotlin/KSP/KAPT
+**/generated/
