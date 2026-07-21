@@ -8,7 +8,7 @@ import android.os.Message
  */
 
 sealed class AuthState{
-    object Idele: AuthState()   /** se abrió la pantalla recién */
+    object Idle: AuthState()   /** se abrió la pantalla recién */
     object Loading: AuthState() /** mostrar spinner de carga */
     data class Success(val user: User): AuthState() /** login/registro funcionó, y trae adentro el User que logró autenticarse */
     data class Error(val message: String): AuthState() /** algo falló, ejem: contraseña incorrecta */
