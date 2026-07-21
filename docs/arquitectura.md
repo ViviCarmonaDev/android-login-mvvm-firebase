@@ -2,7 +2,9 @@
 
 Este proyecto sigue el patrón MVVM (Model - View - ViewModel), con una capa adicional de Repository que actúa como puente entre el ViewModel y Firebase.
 
-## DIAGRMA DE CAPAS
+## DIAGRAMA DE CAPAS
+
+![Diagrama de arquitectura MVVM](images/arquitectura-mvvm.svg)
 
 RESPONSABILIDADES DE CADA CAPA
 
