@@ -24,12 +24,25 @@ import com.vivicarmonadev.loginmvvm.R
 
 @Composable
 
-fun LoginScreen(modifier: Modifier = Modifier,onNavigateToRegister: () -> Unit = {},viewModel: AuthViewModel = viewModel()){
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToRegister: () -> Unit = {},
+    onLoginSuccess: () -> Unit = {},
+    viewModel: AuthViewModel = viewModel()
+){
 
     // Variables locales que guardan lo que el usuario escribe en cada campo.
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val authState by viewModel.authState.collectAsState()
+
+    // Se ejecuta automáticamente cada vez que "authState" cambia de valor.
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Success) {
+            onLoginSuccess()
+            viewModel.resetState()
+        }
+    }
 
     val context = LocalContext.current // Necesitamos el "contexto" de Android para poder configurar Google Sign-In.
 

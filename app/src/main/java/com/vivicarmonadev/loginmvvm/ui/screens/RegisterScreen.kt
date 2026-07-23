@@ -14,13 +14,26 @@ import com.vivicarmonadev.loginmvvm.model.AuthState
 import com.vivicarmonadev.loginmvvm.viewmodel.AuthViewModel
 
 @Composable
-fun RegisterScreen(modifier: Modifier = Modifier,onNavigateBackToLogin: () -> Unit = {}, viewModel: AuthViewModel = viewModel()){
+fun RegisterScreen(
+    modifier: Modifier = Modifier,
+    onNavigateBackToLogin: () -> Unit = {},
+    onRegisterSuccess: () -> Unit = {},
+    viewModel: AuthViewModel = viewModel()){
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var localError by remember { mutableStateOf<String?>(null) }
+
     val authState by viewModel.authState.collectAsState()
+
+    // Se ejecuta automáticamente cada vez que "authState" cambia de valor.
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Success) {
+            onRegisterSuccess()
+            viewModel.resetState()
+        }
+    }
 
     Column(
         modifier = modifier

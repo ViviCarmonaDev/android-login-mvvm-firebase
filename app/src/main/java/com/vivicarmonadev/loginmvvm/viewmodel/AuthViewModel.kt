@@ -25,6 +25,9 @@ class AuthViewModel ( private val authRepository: AuthRepository = FirebaseAuthR
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
+    // Expone el usuario actual directamente, para pantallas que solo necesitan mostrar datos (como HomeScreen)
+    val currentUser get() = authRepository.currentUser
+
     /**
      * Se llama cuando el usuario presiona "Entrar" en LoginScreen.
      */
