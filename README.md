@@ -11,9 +11,11 @@ con Kotlin y Jetpack Compose.
 
 - Registro de usuario con correo y contraseña
 - Inicio de sesión con correo y contraseña
+- Inicio de sesión con Google (Google Sign-In)
+- Pantalla Home tras autenticación exitosa, con cierre de sesión
+- Navegación automática entre Login → Registro → Home según el estado de autenticación
 - Validaciones locales (campos vacíos, contraseñas coincidentes, longitud mínima)
 - Manejo de estados de carga y error en la UI, con mensajes traducidos al español
-- Navegación entre Login y Registro con Navigation Compose
 - Arquitectura MVVM con separación clara de capas (Model, Repository, ViewModel, View)
 
 ## 🛠️ Stack técnico
@@ -29,13 +31,18 @@ con Kotlin y Jetpack Compose.
 
 ## 📂 Estructura del proyecto
 app/src/main/java/com/vivicarmonadev/loginmvvm/
-├── model/ # Clases de datos y estados de UI (User, AuthState)
-├── repository/ # Abstracción y acceso a Firebase Auth
-├── viewmodel/ # Lógica de presentación (AuthViewModel)
-├── ui/screens/ # Composables de cada pantalla (Login, Registro)
-├── ui/theme/ # Tema visual de Compose
-└── navigation/ # Grafo de navegación
 
+├── model/ # Clases de datos y estados de UI (User, AuthState)
+
+├── repository/ # Abstracción y acceso a Firebase Auth
+
+├── viewmodel/ # Lógica de presentación (AuthViewModel)
+
+├── ui/screens/ # Composables de cada pantalla (Login, Registro, Home)
+
+├── ui/theme/ # Tema visual de Compose
+
+└── navigation/ # Grafo de navegación (AppNavigation) 
 
 ## 🚀 Cómo correr el proyecto
 
@@ -56,7 +63,19 @@ git clone https://github.com/TU-USUARIO/android-login-mvvm-firebase.git
 En Firebase Console → **Authentication** → **Sign-in method**, habilita:
 - Correo electrónico/contraseña
 
-(Google Sign-In está planeado pero aún no integrado en la app — ver sección "En progreso" arriba).
+### 4. Configura Google Sign-In
+1. Agrega la huella digital SHA-1 de tu entorno de desarrollo en Firebase Console
+   (**Configuración del proyecto** → **Tus apps** → **Agregar huella digital**).
+   Puedes obtenerla con:
+```bash
+   ./gradlew signingReport
+```
+2. Copia el **"ID de cliente web"** que Firebase genera automáticamente al habilitar Google
+   (en **Authentication** → **Sign-in method** → **Google**).
+3. Agrégalo en `app/src/main/res/values/strings.xml`:
+```xml
+   <string name="default_web_client_id">TU_WEB_CLIENT_ID</string>
+```
 
 ### 4. Abre el proyecto en Android Studio
 - Sincroniza Gradle.
@@ -65,9 +84,3 @@ En Firebase Console → **Authentication** → **Sign-in method**, habilita:
 ## 📄 Licencia
 
 Este proyecto está bajo la licencia MIT — úsalo libremente para practicar o como base de tus propios proyectos.
-Cambios que hice respecto a la versión original:
-
-
-
-
-
