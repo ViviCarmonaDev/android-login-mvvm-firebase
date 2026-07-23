@@ -1,5 +1,7 @@
 package com.vivicarmonadev.loginmvvm.ui.screens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -7,11 +9,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.vivicarmonadev.loginmvvm.viewmodel.AuthViewModel
-import com.vivicarmonadev.loginmvvm.model.AuthState
 import androidx.compose.foundation.background
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import android.app.Activity
+import com.vivicarmonadev.loginmvvm.viewmodel.AuthViewModel
+import com.vivicarmonadev.loginmvvm.model.AuthState
+import com.vivicarmonadev.loginmvvm.R
+
 
 @Composable
 
@@ -21,6 +30,38 @@ fun LoginScreen(modifier: Modifier = Modifier,onNavigateToRegister: () -> Unit =
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val authState by viewModel.authState.collectAsState()
+
+    val context = LocalContext.current // Necesitamos el "contexto" de Android para poder configurar Google Sign-In.
+
+    // Configuracion de qué le vamos a pedir a Google (el idToken, usando el Web Client ID que se guarda en strings.xml).
+    val gso = remember {
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(context.getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+    }
+
+    val googleSignInClient = remember { GoogleSignIn.getClient(context, gso) }
+
+    // Este es el "lanzador": abre la pantalla nativa de Google, y cuando el usuario elige su cuenta (o cancela), este bloque recibe el resultado.
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                val idToken = account.idToken
+                if (idToken != null) {
+                    viewModel.signInWithGoogle(idToken)
+                }
+
+            // El usuario canceló, o hubo un error de Google Play Services.
+            } catch (e: ApiException) {
+
+            }
+        }
+    }
 
     // acomoda los elementos de adentro uno debajo del otro (verticalmente).
     Column(
@@ -74,6 +115,15 @@ fun LoginScreen(modifier: Modifier = Modifier,onNavigateToRegister: () -> Unit =
             } else {
                 Text("Entrar")
             }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Botón que lanza la pantalla nativa de Google.
+        OutlinedButton(
+            onClick = { launcher.launch(googleSignInClient.signInIntent) }
+        ) {
+            Text("Continuar con Google")
         }
 
         Spacer(modifier = Modifier.height(16.dp))

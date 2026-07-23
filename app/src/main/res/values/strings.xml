@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LoginMVVM</string>
+    <string name="default_web_client_id">658018357324-v9400263b6gohl38b4d40mjq6i9c25l5.apps.googleusercontent.com</string>
 </resources>
